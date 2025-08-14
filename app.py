@@ -1,6 +1,7 @@
 import os
 import time
 import logging
+from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, flash, g
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
@@ -225,9 +226,14 @@ def teste_estresse():
                 
             # Extrai métricas básicas do conteúdo
             import re
-            total_requests = re.search(r'Total de Requests:\*\*\s*(\d+)', content)
-            success_rate = re.search(r'Taxa de Sucesso:\*\*\s*([\d.]+)%', content)
-            avg_time = re.search(r'Tempo.*Médio.*:\*\*\s*([\d.]+)\s*ms', content)
+            # Busca pelos padrões dos relatórios básicos e avançados
+            total_requests = re.search(r'- \*\*Total de Requests:\*\*\s*(\d+)', content)
+            success_rate = re.search(r'- \*\*Taxa de Sucesso:\*\*\s*([\d.]+)%', content)
+            avg_time = re.search(r'- \*\*Média:\*\*\s*([\d.]+)\s*ms', content)
+            
+            # Se não encontrou no padrão básico, tenta padrão avançado
+            if not avg_time:
+                avg_time = re.search(r'- \*\*Tempo de Resposta Médio:\*\*\s*([\d.]+)\s*ms', content)
             
             report_type = "Avançado" if "advanced" in report_file else "Básico"
             
