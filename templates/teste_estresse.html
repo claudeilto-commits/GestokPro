@@ -1,0 +1,296 @@
+{% extends "base.html" %}
+
+{% block title %}Teste de Estresse - GestokPro{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="bg-white rounded-lg shadow-sm p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900 mb-2">
+                    <i class="fas fa-tachometer-alt mr-2 text-red-600"></i>Sistema de Teste de Estresse
+                </h1>
+                <p class="text-gray-600">Monitore e teste a performance da aplicação</p>
+            </div>
+            <div class="flex space-x-2">
+                <button onclick="showTestModal()" 
+                        class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors">
+                    <i class="fas fa-play mr-2"></i>Executar Teste
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <!-- Total Tests -->
+        <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-blue-500">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Total de Testes</p>
+                    <p class="text-3xl font-bold text-gray-900">{{ reports|length }}</p>
+                </div>
+                <div class="p-3 bg-blue-100 rounded-full">
+                    <i class="fas fa-chart-line text-blue-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Last Test Success Rate -->
+        {% set latest_report = reports[0] if reports else None %}
+        <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-green-500">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Taxa de Sucesso</p>
+                    <p class="text-3xl font-bold text-gray-900">
+                        {% if latest_report %}{{ latest_report.success_rate }}%{% else %}N/A{% endif %}
+                    </p>
+                </div>
+                <div class="p-3 bg-green-100 rounded-full">
+                    <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Last Test Avg Time -->
+        <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-yellow-500">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Tempo Médio</p>
+                    <p class="text-3xl font-bold text-gray-900">
+                        {% if latest_report %}{{ latest_report.avg_time }} ms{% else %}N/A{% endif %}
+                    </p>
+                </div>
+                <div class="p-3 bg-yellow-100 rounded-full">
+                    <i class="fas fa-clock text-yellow-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Last Test Requests -->
+        <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-purple-500">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Total Requests</p>
+                    <p class="text-3xl font-bold text-gray-900">
+                        {% if latest_report %}{{ latest_report.total_requests }}{% else %}N/A{% endif %}
+                    </p>
+                </div>
+                <div class="p-3 bg-purple-100 rounded-full">
+                    <i class="fas fa-exchange-alt text-purple-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Reports Table -->
+    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-900">
+                <i class="fas fa-history mr-2"></i>Histórico de Testes
+            </h2>
+        </div>
+        
+        {% if reports %}
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Data/Hora
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Tipo
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Requests
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Taxa de Sucesso
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Tempo Médio
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Status
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Ações
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for report in reports %}
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {{ report.created }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {% if report.type == 'Avançado' %}
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">
+                                    Avançado
+                                </span>
+                            {% else %}
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                    Básico
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {{ report.total_requests }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {{ report.success_rate }}%
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {{ report.avg_time }} ms
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {% set avg_time_float = report.avg_time|float %}
+                            {% if avg_time_float < 200 %}
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                    Excelente
+                                </span>
+                            {% elif avg_time_float < 500 %}
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                    Bom
+                                </span>
+                            {% elif avg_time_float < 1000 %}
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-orange-100 text-orange-800">
+                                    Atenção
+                                </span>
+                            {% else %}
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                    Crítico
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <a href="#" onclick="viewReport('{{ report.filename }}')" 
+                               class="text-blue-600 hover:text-blue-900 mr-3" title="Ver Relatório">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="#" onclick="downloadReport('{{ report.filename }}')" 
+                               class="text-green-600 hover:text-green-900" title="Download">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-12">
+            <i class="fas fa-chart-line text-4xl text-gray-400 mb-4"></i>
+            <h3 class="text-lg font-medium text-gray-900 mb-2">Nenhum teste executado</h3>
+            <p class="text-gray-500 mb-6">Execute seu primeiro teste de estresse para ver os resultados aqui.</p>
+            <button onclick="showTestModal()" 
+                    class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors">
+                <i class="fas fa-play mr-2"></i>Executar Primeiro Teste
+            </button>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Instructions -->
+    <div class="bg-blue-50 rounded-lg p-6">
+        <h3 class="text-lg font-semibold text-blue-900 mb-4">
+            <i class="fas fa-info-circle mr-2"></i>Como Usar o Sistema de Teste
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <h4 class="font-medium text-blue-800 mb-2">Via Interface Web:</h4>
+                <ul class="text-sm text-blue-700 space-y-1">
+                    <li>• Use o botão "Executar Teste" acima</li>
+                    <li>• Escolha o tipo de teste desejado</li>
+                    <li>• Acompanhe os logs do servidor</li>
+                    <li>• Visualize os resultados nesta página</li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-medium text-blue-800 mb-2">Via Linha de Comando:</h4>
+                <ul class="text-sm text-blue-700 space-y-1">
+                    <li>• <code class="bg-blue-100 px-1 rounded">python run_stress_test.py</code> - Teste rápido</li>
+                    <li>• <code class="bg-blue-100 px-1 rounded">python advanced_stress_test.py</code> - Teste avançado</li>
+                    <li>• <code class="bg-blue-100 px-1 rounded">python test_menu.py</code> - Menu interativo</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Test Execution -->
+<div id="testModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center">
+    <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-medium text-gray-900">Executar Teste de Estresse</h3>
+            <button onclick="closeTestModal()" class="text-gray-400 hover:text-gray-600">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <form id="testForm" method="POST" action="{{ url_for('executar_teste_estresse') }}">
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Teste:</label>
+                <select name="test_type" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500">
+                    <option value="basic">Teste Básico (30s)</option>
+                    <option value="advanced">Teste Avançado (45s)</option>
+                    <option value="intensive">Teste Intensivo (60s)</option>
+                </select>
+            </div>
+            
+            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4">
+                <div class="flex">
+                    <i class="fas fa-exclamation-triangle text-yellow-400 mr-2 mt-0.5"></i>
+                    <div class="text-sm text-yellow-700">
+                        <strong>Atenção:</strong> O teste pode impactar a performance da aplicação durante a execução.
+                        Acompanhe os logs do servidor para ver o progresso.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex justify-end space-x-3">
+                <button type="button" onclick="closeTestModal()" 
+                        class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                    Cancelar
+                </button>
+                <button type="submit" 
+                        class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
+                    <i class="fas fa-play mr-2"></i>Iniciar Teste
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function showTestModal() {
+    document.getElementById('testModal').classList.remove('hidden');
+    document.getElementById('testModal').classList.add('flex');
+}
+
+function closeTestModal() {
+    document.getElementById('testModal').classList.add('hidden');
+    document.getElementById('testModal').classList.remove('flex');
+}
+
+function viewReport(filename) {
+    // Simula visualização do relatório
+    alert('Funcionalidade de visualização será implementada. Arquivo: ' + filename);
+}
+
+function downloadReport(filename) {
+    // Simula download do relatório
+    alert('Funcionalidade de download será implementada. Arquivo: ' + filename);
+}
+
+// Close modal when clicking outside
+document.getElementById('testModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeTestModal();
+    }
+});
+</script>
+{% endblock %}

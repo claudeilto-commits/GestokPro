@@ -27,6 +27,10 @@
                            class="hover:text-blue-200 transition-colors {{ 'text-blue-200' if request.endpoint in ['produtos', 'produto_novo', 'produto_editar'] }}">
                             <i class="fas fa-box mr-1"></i>Produtos
                         </a>
+                        <a href="{{ url_for('teste_estresse') }}" 
+                           class="hover:text-blue-200 transition-colors {{ 'text-blue-200' if request.endpoint == 'teste_estresse' }}">
+                            <i class="fas fa-tachometer-alt mr-1"></i>Performance
+                        </a>
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
@@ -53,6 +57,10 @@
                 <a href="{{ url_for('produtos') }}" 
                    class="block py-2 px-3 rounded {{ 'bg-blue-700' if request.endpoint in ['produtos', 'produto_novo', 'produto_editar'] }}">
                     <i class="fas fa-box mr-1"></i>Produtos
+                </a>
+                <a href="{{ url_for('teste_estresse') }}" 
+                   class="block py-2 px-3 rounded {{ 'bg-blue-700' if request.endpoint == 'teste_estresse' }}">
+                    <i class="fas fa-tachometer-alt mr-1"></i>Performance
                 </a>
             </div>
         </div>

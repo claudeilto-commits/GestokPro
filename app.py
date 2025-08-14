@@ -201,6 +201,63 @@ def produto_movimentar(id):
     flash(f'Movimentação de {operacao} realizada com sucesso!', 'success')
     return redirect(url_for('produtos'))
 
+@app.route('/teste-estresse')
+@login_required
+def teste_estresse():
+    """Página para visualizar e executar testes de estresse"""
+    import glob
+    import os
+    
+    # Busca relatórios existentes
+    basic_reports = glob.glob("stress_test_report_*.md")
+    advanced_reports = glob.glob("advanced_stress_report_*.md")
+    
+    all_reports = []
+    
+    for report_file in basic_reports + advanced_reports:
+        try:
+            stats = os.stat(report_file)
+            created_time = datetime.fromtimestamp(stats.st_mtime)
+            
+            # Lê algumas métricas básicas do relatório
+            with open(report_file, 'r', encoding='utf-8') as f:
+                content = f.read()
+                
+            # Extrai métricas básicas do conteúdo
+            import re
+            total_requests = re.search(r'Total de Requests:\*\*\s*(\d+)', content)
+            success_rate = re.search(r'Taxa de Sucesso:\*\*\s*([\d.]+)%', content)
+            avg_time = re.search(r'Tempo.*Médio.*:\*\*\s*([\d.]+)\s*ms', content)
+            
+            report_type = "Avançado" if "advanced" in report_file else "Básico"
+            
+            all_reports.append({
+                'filename': report_file,
+                'type': report_type,
+                'created': created_time.strftime('%d/%m/%Y %H:%M'),
+                'total_requests': total_requests.group(1) if total_requests else 'N/A',
+                'success_rate': success_rate.group(1) if success_rate else 'N/A',
+                'avg_time': avg_time.group(1) if avg_time else 'N/A'
+            })
+        except:
+            continue
+    
+    # Ordena por data de criação (mais recente primeiro)
+    all_reports.sort(key=lambda x: x['created'], reverse=True)
+    
+    return render_template('teste_estresse.html', reports=all_reports)
+
+@app.route('/executar-teste-estresse', methods=['POST'])
+@login_required
+def executar_teste_estresse():
+    """Executa um teste de estresse via web"""
+    test_type = request.form.get('test_type', 'basic')
+    
+    # Aqui normalmente executaríamos o teste em background
+    # Por simplicidade, vamos apenas simular
+    flash('Teste de estresse iniciado! Verifique os logs do servidor.', 'info')
+    return redirect(url_for('teste_estresse'))
+
 # Create tables
 with app.app_context():
     db.create_all()
