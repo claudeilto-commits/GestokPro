@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}GestokPro - Sistema de Gestão de Estoque{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body class="bg-gray-50 min-h-screen pb-16">
+    <!-- Navigation -->
+    {% if current_user.is_authenticated %}
+    <nav class="bg-blue-600 text-white shadow-lg">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-8">
+                    <h1 class="text-xl font-bold">
+                        <i class="fas fa-boxes mr-2"></i>GestokPro
+                    </h1>
+                    <div class="hidden md:flex space-x-6">
+                        <a href="{{ url_for('dashboard') }}" 
+                           class="hover:text-blue-200 transition-colors {{ 'text-blue-200' if request.endpoint == 'dashboard' }}">
+                            <i class="fas fa-chart-line mr-1"></i>Dashboard
+                        </a>
+                        <a href="{{ url_for('produtos') }}" 
+                           class="hover:text-blue-200 transition-colors {{ 'text-blue-200' if request.endpoint in ['produtos', 'produto_novo', 'produto_editar'] }}">
+                            <i class="fas fa-box mr-1"></i>Produtos
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm">
+                        <i class="fas fa-user mr-1"></i>{{ current_user.email }}
+                    </span>
+                    <a href="{{ url_for('logout') }}" 
+                       class="bg-blue-700 hover:bg-blue-800 px-3 py-1 rounded transition-colors">
+                        <i class="fas fa-sign-out-alt mr-1"></i>Sair
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile menu -->
+    <div class="md:hidden bg-blue-500 text-white">
+        <div class="container mx-auto px-4 py-2">
+            <div class="flex space-x-4">
+                <a href="{{ url_for('dashboard') }}" 
+                   class="block py-2 px-3 rounded {{ 'bg-blue-700' if request.endpoint == 'dashboard' }}">
+                    <i class="fas fa-chart-line mr-1"></i>Dashboard
+                </a>
+                <a href="{{ url_for('produtos') }}" 
+                   class="block py-2 px-3 rounded {{ 'bg-blue-700' if request.endpoint in ['produtos', 'produto_novo', 'produto_editar'] }}">
+                    <i class="fas fa-box mr-1"></i>Produtos
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="container mx-auto px-4 mt-4">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} mb-4 p-4 rounded-lg border-l-4 
+                        {% if category == 'error' %}bg-red-50 border-red-500 text-red-700
+                        {% elif category == 'success' %}bg-green-50 border-green-500 text-green-700
+                        {% elif category == 'info' %}bg-blue-50 border-blue-500 text-blue-700
+                        {% else %}bg-yellow-50 border-yellow-500 text-yellow-700{% endif %}">
+                        <div class="flex items-center">
+                            <i class="fas fa-{% if category == 'error' %}exclamation-triangle{% elif category == 'success' %}check-circle{% elif category == 'info' %}info-circle{% else %}exclamation-triangle{% endif %} mr-2"></i>
+                            {{ message }}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-6">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Performance Footer -->
+    <footer class="bg-gray-100 text-center text-xs p-2 fixed bottom-0 w-full border-t border-gray-200">
+        <div class="container mx-auto">
+            <span class="text-gray-600">
+                <i class="fas fa-clock mr-1"></i>Página gerada em: 
+                <span class="font-bold text-blue-600">{{ response_time_ms }} ms</span>
+            </span>
+            <span class="text-gray-400 ml-4">
+                GestokPro v1.0 - Sistema de Gestão de Estoque
+            </span>
+        </div>
+    </footer>
+</body>
+</html>

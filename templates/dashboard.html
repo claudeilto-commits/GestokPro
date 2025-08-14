@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - GestokPro{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="bg-white rounded-lg shadow-sm p-6">
+        <h1 class="text-2xl font-bold text-gray-900 mb-2">
+            <i class="fas fa-chart-line mr-2 text-blue-600"></i>Dashboard
+        </h1>
+        <p class="text-gray-600">Visão geral do seu sistema de estoque</p>
+    </div>
+
+    <!-- Metrics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Total Products -->
+        <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-blue-500">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Total de Produtos</p>
+                    <p class="text-3xl font-bold text-gray-900">{{ total_produtos }}</p>
+                </div>
+                <div class="p-3 bg-blue-100 rounded-full">
+                    <i class="fas fa-box text-blue-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Stock -->
+        <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-green-500">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Itens em Estoque</p>
+                    <p class="text-3xl font-bold text-gray-900">{{ total_estoque }}</p>
+                </div>
+                <div class="p-3 bg-green-100 rounded-full">
+                    <i class="fas fa-cubes text-green-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stock Value -->
+        <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-purple-500">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Valor do Estoque</p>
+                    <p class="text-3xl font-bold text-gray-900">R$ {{ "%.2f"|format(valor_total_estoque) }}</p>
+                </div>
+                <div class="p-3 bg-purple-100 rounded-full">
+                    <i class="fas fa-dollar-sign text-purple-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Low Stock Alert -->
+        <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-red-500">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Estoque Baixo</p>
+                    <p class="text-3xl font-bold text-gray-900">{{ produtos_baixo_estoque }}</p>
+                </div>
+                <div class="p-3 bg-red-100 rounded-full">
+                    <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="bg-white rounded-lg shadow-sm p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">
+            <i class="fas fa-bolt mr-2 text-yellow-500"></i>Ações Rápidas
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <a href="{{ url_for('produto_novo') }}" 
+               class="bg-blue-500 hover:bg-blue-600 text-white p-4 rounded-lg text-center transition-colors group">
+                <i class="fas fa-plus text-2xl mb-2 group-hover:scale-110 transition-transform"></i>
+                <div class="font-medium">Novo Produto</div>
+                <div class="text-sm opacity-90">Adicionar produto ao catálogo</div>
+            </a>
+            
+            <a href="{{ url_for('produtos') }}" 
+               class="bg-green-500 hover:bg-green-600 text-white p-4 rounded-lg text-center transition-colors group">
+                <i class="fas fa-list text-2xl mb-2 group-hover:scale-110 transition-transform"></i>
+                <div class="font-medium">Ver Produtos</div>
+                <div class="text-sm opacity-90">Gerenciar catálogo</div>
+            </a>
+            
+            <a href="{{ url_for('produtos') }}" 
+               class="bg-purple-500 hover:bg-purple-600 text-white p-4 rounded-lg text-center transition-colors group">
+                <i class="fas fa-chart-bar text-2xl mb-2 group-hover:scale-110 transition-transform"></i>
+                <div class="font-medium">Relatórios</div>
+                <div class="text-sm opacity-90">Análises de estoque</div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Recent Activity or System Status -->
+    <div class="bg-white rounded-lg shadow-sm p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">
+            <i class="fas fa-info-circle mr-2 text-blue-500"></i>Status do Sistema
+        </h2>
+        <div class="space-y-3">
+            <div class="flex items-center text-sm">
+                <div class="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
+                <span class="text-gray-600">Sistema operacional</span>
+            </div>
+            <div class="flex items-center text-sm">
+                <div class="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
+                <span class="text-gray-600">Banco de dados conectado</span>
+            </div>
+            <div class="flex items-center text-sm">
+                <div class="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
+                <span class="text-gray-600">Última atualização: hoje</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
