@@ -1,0 +1,372 @@
+
+# COMO USAR O GESTOKPRO LOCALMENTE NO SEU PC
+
+Este guia explica como baixar todos os arquivos do GestokPro do Replit e executar no seu computador local.
+
+## ÍNDICE
+
+- Pré-requisitos
+- Método 1: Download ZIP do Replit
+- Método 2: Clone via Git
+- Configuração Local
+- Instalação das Dependências
+- Configurar Banco de Dados
+- Executar o Sistema
+- Solução de Problemas
+- Dicas Importantes
+
+## PRÉ-REQUISITOS
+
+Software que deve estar instalado no seu PC:
+
+1. Python 3.8 ou superior
+   - Download: https://www.python.org/downloads/
+   - No Windows: Marque "Add Python to PATH" durante instalação
+
+2. PostgreSQL 13 ou superior
+   - Windows: https://www.postgresql.org/download/windows/
+   - Mac: https://www.postgresql.org/download/macosx/
+   - Linux: sudo apt install postgresql postgresql-contrib
+
+3. Git (opcional, mas recomendado)
+   - Download: https://git-scm.com/downloads
+
+4. Editor de código (opcional)
+   - VS Code: https://code.visualstudio.com/
+   - PyCharm: https://www.jetbrains.com/pycharm/
+
+## MÉTODO 1: DOWNLOAD ZIP DO REPLIT
+
+### Passo 1: Baixar Arquivos
+
+1. No seu Replit, clique nos 3 pontinhos (...) no painel lateral esquerdo
+2. Selecione "Download as ZIP"
+3. Aguarde o download do arquivo (repl-download.zip)
+4. Salve em uma pasta no seu computador (ex: C:\gestokpro ou ~/gestokpro)
+
+### Passo 2: Extrair Arquivos
+
+1. Clique com botão direito no arquivo ZIP baixado
+2. Selecione "Extrair aqui" ou "Extract here"
+3. Uma pasta será criada com todos os arquivos
+
+### Passo 3: Verificar Estrutura
+
+Você deve ter esta estrutura de pastas:
+
+gestokpro/
+├── docs/
+├── static/
+├── stress_testing/
+├── templates/
+├── tests/
+├── app.py
+├── models.py
+├── forms.py
+├── init_db.py
+├── main.py
+├── README.md
+├── README.txt
+├── GIT.md
+├── LOCAL.txt (este arquivo)
+└── outros arquivos...
+
+## MÉTODO 2: CLONE VIA GIT
+
+### Passo 1: Abrir Terminal/Prompt
+
+Windows:
+- Pressione Win + R
+- Digite "cmd" e pressione Enter
+
+Mac/Linux:
+- Pressione Ctrl + Alt + T (Linux)
+- Pressione Cmd + Space, digite "Terminal" (Mac)
+
+### Passo 2: Navegar para Pasta Desejada
+
+# Windows
+cd C:\
+mkdir projetos
+cd projetos
+
+# Mac/Linux
+cd ~
+mkdir projetos
+cd projetos
+
+### Passo 3: Clonar Repositório
+
+Se você já subiu para GitHub:
+git clone https://github.com/seu-usuario/gestokpro.git
+cd gestokpro
+
+## CONFIGURAÇÃO LOCAL
+
+### Passo 1: Abrir Terminal na Pasta do Projeto
+
+Windows:
+- Abra a pasta do projeto no Explorer
+- Shift + Clique direito em área vazia
+- Selecione "Abrir janela do PowerShell aqui"
+
+Mac/Linux:
+- Navegue até a pasta no terminal:
+cd caminho/para/gestokpro
+
+### Passo 2: Verificar Python
+
+python --version
+# ou
+python3 --version
+
+Deve mostrar Python 3.8 ou superior.
+
+### Passo 3: Criar Arquivo de Configuração
+
+Crie um arquivo chamado .env na pasta raiz:
+
+# Windows (no Notepad)
+notepad .env
+
+# Mac/Linux
+nano .env
+# ou
+touch .env
+
+Conteúdo do arquivo .env:
+
+DATABASE_URL=postgresql://postgres:senha@localhost:5432/gestokpro
+SESSION_SECRET=minha-chave-secreta-super-forte-123
+FLASK_ENV=development
+FLASK_DEBUG=1
+
+Substitua "senha" pela senha do seu PostgreSQL.
+
+## INSTALAÇÃO DAS DEPENDÊNCIAS
+
+### Passo 1: Instalar Dependências Python
+
+# Instalar todas as dependências necessárias
+pip install flask flask-sqlalchemy flask-login flask-wtf wtforms
+pip install werkzeug psycopg2-binary gunicorn aiohttp email-validator
+
+### Passo 2: Verificar Instalação
+
+python -c "import flask; print('Flask:', flask.__version__)"
+python -c "import sqlalchemy; print('SQLAlchemy OK')"
+
+## CONFIGURAR BANCO DE DADOS
+
+### Passo 1: Iniciar PostgreSQL
+
+Windows:
+- Procure "Services" no menu Iniciar
+- Encontre "PostgreSQL" e inicie o serviço
+
+Mac:
+brew services start postgresql
+
+Linux:
+sudo systemctl start postgresql
+sudo systemctl enable postgresql
+
+### Passo 2: Criar Banco de Dados
+
+# Acessar PostgreSQL
+psql -U postgres
+
+# Dentro do PostgreSQL, criar banco:
+CREATE DATABASE gestokpro;
+CREATE USER gestokpro_user WITH PASSWORD 'senha123';
+GRANT ALL PRIVILEGES ON DATABASE gestokpro TO gestokpro_user;
+\q
+
+### Passo 3: Inicializar Banco
+
+Na pasta do projeto:
+python init_db.py
+
+Você deve ver mensagens como:
+- "Banco de dados inicializado com sucesso!"
+- "Usuário administrador criado"
+- "Produtos de exemplo inseridos"
+
+## EXECUTAR O SISTEMA
+
+### Passo 1: Iniciar Aplicação
+
+No terminal, na pasta do projeto:
+
+# Modo desenvolvimento (recomendado para uso local)
+python app.py
+
+# Ou modo produção
+python main.py
+
+### Passo 2: Acessar no Navegador
+
+1. Abra seu navegador (Chrome, Firefox, etc.)
+2. Digite: http://localhost:5000
+3. Pressione Enter
+
+### Passo 3: Fazer Login
+
+Credenciais padrão:
+- Email: admin@gestokpro.com
+- Senha: admin
+
+IMPORTANTE: Mude a senha após o primeiro login!
+
+## SOLUÇÃO DE PROBLEMAS
+
+### Erro: "Python não é reconhecido"
+
+Windows:
+1. Reinstale Python marcando "Add to PATH"
+2. Ou adicione manualmente:
+   - Painel de Controle > Sistema > Variáveis de Ambiente
+   - Adicione C:\Python39 (ou sua versão) ao PATH
+
+### Erro: "psycopg2 installation failed"
+
+Windows:
+pip install psycopg2-binary --force-reinstall
+
+Mac:
+brew install postgresql
+pip install psycopg2-binary
+
+Linux:
+sudo apt-get install python3-dev libpq-dev
+pip install psycopg2-binary
+
+### Erro: "could not connect to server"
+
+1. Verifique se PostgreSQL está rodando:
+
+Windows:
+services.msc (procure PostgreSQL)
+
+Mac/Linux:
+sudo systemctl status postgresql
+
+2. Verifique as credenciais no arquivo .env
+3. Teste a conexão:
+psql -U postgres -h localhost
+
+### Erro: "Port 5000 is already in use"
+
+1. Encontre o processo usando a porta:
+
+Windows:
+netstat -ano | findstr 5000
+
+Mac/Linux:
+lsof -i :5000
+
+2. Termine o processo:
+
+Windows:
+taskkill /PID numero_do_pid /F
+
+Mac/Linux:
+kill -9 numero_do_pid
+
+### Erro: "No module named 'flask'"
+
+Reinstale as dependências:
+pip install --upgrade pip
+pip install flask flask-sqlalchemy flask-login flask-wtf wtforms werkzeug psycopg2-binary
+
+## DICAS IMPORTANTES
+
+### Desenvolvimento Local
+
+1. Use sempre python app.py para desenvolvimento
+2. O modo debug está ativado, então mudanças no código são aplicadas automaticamente
+3. Logs detalhados aparecem no terminal
+
+### Backup dos Dados
+
+Para fazer backup do banco:
+pg_dump -U postgres gestokpro > backup_gestokpro.sql
+
+Para restaurar:
+psql -U postgres gestokpro < backup_gestokpro.sql
+
+### Performance
+
+1. Para testes de performance, use:
+python stress_testing/run_stress_test.py
+
+2. Para menu completo de testes:
+python stress_testing/test_menu.py
+
+### Atualizações
+
+Para atualizar o projeto:
+1. Baixe novo ZIP do Replit
+2. Substitua os arquivos (exceto .env e instance/)
+3. Execute: python init_db.py se houver mudanças no banco
+
+### Múltiplos Projetos
+
+Para ter várias versões:
+1. Crie pastas separadas (gestokpro-v1, gestokpro-v2)
+2. Use bancos diferentes (gestokpro1, gestokpro2)
+3. Mude a porta no app.py se necessário
+
+### Editores Recomendados
+
+VS Code com extensões:
+- Python
+- PostgreSQL
+- Flask Snippets
+
+PyCharm:
+- Suporte nativo para Flask e PostgreSQL
+
+### Estrutura Recomendada no PC
+
+C:\projetos\               # Windows
+├── gestokpro\
+├── backups\
+└── documentos\
+
+~/projetos/                # Mac/Linux
+├── gestokpro/
+├── backups/
+└── documentos/
+
+## PRÓXIMOS PASSOS
+
+Após configurar localmente:
+
+1. Explore o sistema na interface web
+2. Cadastre alguns produtos de teste
+3. Execute testes de performance
+4. Customize conforme suas necessidades
+5. Faça backup regular dos dados
+
+## SUPORTE
+
+Se encontrar problemas:
+
+1. Verifique se todos os pré-requisitos estão instalados
+2. Confirme se PostgreSQL está rodando
+3. Valide o arquivo .env
+4. Consulte os logs no terminal
+5. Execute python init_db.py novamente se necessário
+
+## RECURSOS ÚTEIS
+
+- Documentação Flask: https://flask.palletsprojects.com/
+- PostgreSQL Tutorial: https://www.postgresql.org/docs/
+- Python Download: https://www.python.org/downloads/
+- Git Tutorial: https://git-scm.com/docs/gittutorial
+
+---
+
+Agora você tem o GestokPro rodando completamente no seu PC local!
+Para dúvidas, consulte README.md ou GIT.md nesta pasta.
