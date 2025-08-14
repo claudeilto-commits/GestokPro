@@ -129,39 +129,54 @@ Acesse: `http://localhost:5000`
 
 ```
 gestokpro/
-├── app.py                          # Aplicação Flask principal
-├── main.py                         # Ponto de entrada WSGI
-├── models.py                       # Modelos de dados SQLAlchemy
-├── forms.py                        # Formulários WTForms
-├── init_db.py                      # Script de inicialização do BD
-├── requirements.txt                # Dependências Python
-├── README.md                       # Documentação (este arquivo)
-├── replit.md                       # Arquitetura e preferências
+├── 📚 Documentação
+│   ├── README.md                   # Documentação principal (este arquivo)
+│   ├── PROJECT_STRUCTURE.md       # Estrutura do projeto
+│   ├── LICENSE                     # Licença MIT
+│   └── .gitignore                  # Arquivos ignorados pelo Git
 ├──
-├── templates/                      # Templates Jinja2
-│   ├── base.html                   # Template base
-│   ├── login.html                  # Página de login
-│   ├── dashboard.html              # Dashboard principal
-│   ├── produtos.html               # Listagem de produtos
-│   ├── produto_form.html           # Formulário de produtos
-│   └── teste_estresse.html         # Interface de testes
+├── 🏗️ Aplicação Principal
+│   ├── app.py                      # Aplicação Flask principal
+│   ├── main.py                     # Ponto de entrada WSGI
+│   ├── models.py                   # Modelos de dados SQLAlchemy
+│   ├── forms.py                    # Formulários WTForms
+│   ├── init_db.py                  # Script de inicialização do BD
+│   └── replit.md                   # Arquitetura e preferências
 ├──
-├── static/                         # Arquivos estáticos
-│   ├── css/                        # Estilos customizados
-│   ├── js/                         # Scripts JavaScript
-│   └── images/                     # Imagens e ícones
+├── 📄 Templates e Interface
+│   ├── templates/                  # Templates Jinja2
+│   │   ├── base.html               # Template base
+│   │   ├── login.html              # Página de login
+│   │   ├── dashboard.html          # Dashboard principal
+│   │   ├── produtos.html           # Listagem de produtos
+│   │   ├── produto_form.html       # Formulário de produtos
+│   │   └── teste_estresse.html     # Interface de testes
+│   └── static/                     # Arquivos estáticos
+│       └── css/                    # Estilos customizados
 ├──
-├── instance/                       # Configurações de instância
+├── 🧪 Sistema de Testes
+│   ├── stress_testing/             # Testes de performance
+│   │   ├── test_stress.py          # Teste básico
+│   │   ├── advanced_stress_test.py # Teste avançado
+│   │   ├── run_stress_test.py      # Teste rápido
+│   │   └── test_menu.py            # Menu interativo
+│   └── tests/                      # Testes unitários (futuro)
 ├──
-├── stress_tests/                   # Sistema de testes
-│   ├── test_stress.py              # Teste básico
-│   ├── advanced_stress_test.py     # Teste avançado
-│   ├── run_stress_test.py          # Teste rápido
-│   └── test_menu.py                # Menu interativo
+├── 📖 Documentação Técnica
+│   └── docs/                       
+│       ├── ARCHITECTURE.md         # Arquitetura do sistema
+│       ├── CONTRIBUTING.md         # Guia de contribuição
+│       └── INSTALL.md              # Guia de instalação
+├──
+├── ⚙️ Configuração
+│   ├── pyproject.toml              # Configuração Python/UV
+│   ├── uv.lock                     # Lock de dependências
+│   └── .replit                     # Configuração Replit
 └──
-└── reports/                        # Relatórios de teste
-    ├── stress_test_report_*.md     # Relatórios automáticos
-    └── advanced_stress_report_*.md # Relatórios detalhados
+└── 📊 Dados da Aplicação
+    ├── instance/                   # Dados Flask
+    ├── stress_test_report_*.md     # Relatórios básicos (gerados)
+    └── advanced_stress_report_*.md # Relatórios avançados (gerados)
 ```
 
 ### Descrição dos Arquivos Principais

@@ -209,7 +209,7 @@ def teste_estresse():
     import glob
     import os
     
-    # Busca relatórios existentes
+    # Busca relatórios existentes na raiz do projeto
     basic_reports = glob.glob("stress_test_report_*.md")
     advanced_reports = glob.glob("advanced_stress_report_*.md")
     

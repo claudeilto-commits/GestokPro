@@ -155,9 +155,9 @@ Thumbs.db
 *.tmp
 *.temp
 
-# Stress test reports (opcional - remova se quiser versionar)
-# stress_test_report_*.md
-# advanced_stress_report_*.md
+# Stress test reports (gerados automaticamente)
+stress_test_report_*.md
+advanced_stress_report_*.md
 
 # Environment variables
 .env
