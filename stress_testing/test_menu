@@ -1,0 +1,118 @@
+#!/usr/bin/env python3
+"""
+Menu interativo para executar diferentes tipos de teste no GestokPro
+"""
+
+import asyncio
+import os
+import sys
+
+def show_menu():
+    print("\n🧪 GestokPro - Menu de Testes de Performance")
+    print("=" * 50)
+    print("1. Teste Rápido (30s) - 2 usuários por onda")
+    print("2. Teste Completo (60s) - 3 usuários por onda") 
+    print("3. Teste Avançado (45s) - Carga mista com relatório detalhado")
+    print("4. Teste Intenso (90s) - 5 usuários por onda")
+    print("5. Ver último relatório gerado")
+    print("0. Sair")
+    print("-" * 50)
+
+async def run_basic_test(duration, users):
+    """Executa teste básico"""
+    from test_stress import GestokProStressTester
+    
+    tester = GestokProStressTester(base_url="http://localhost:5000")
+    await tester.run_stress_test(duration_seconds=duration, users_per_wave=users)
+    return tester.generate_performance_report()
+
+async def run_advanced_test():
+    """Executa teste avançado"""
+    from advanced_stress_test import AdvancedGestokProTester
+    
+    tester = AdvancedGestokProTester(base_url="http://localhost:5000")
+    await tester.run_mixed_load_test(duration_seconds=45)
+    return tester.generate_advanced_report()
+
+def show_latest_report():
+    """Mostra o último relatório gerado"""
+    import glob
+    
+    # Busca pelos relatórios mais recentes
+    basic_reports = glob.glob("stress_test_report_*.md")
+    advanced_reports = glob.glob("advanced_stress_report_*.md")
+    
+    all_reports = basic_reports + advanced_reports
+    
+    if not all_reports:
+        print("❌ Nenhum relatório encontrado")
+        return
+    
+    # Ordena por data de modificação
+    all_reports.sort(key=os.path.getmtime, reverse=True)
+    latest_report = all_reports[0]
+    
+    print(f"\n📄 Último relatório: {latest_report}")
+    print("-" * 50)
+    
+    try:
+        with open(latest_report, 'r', encoding='utf-8') as f:
+            content = f.read()
+            # Mostra apenas o resumo (primeiras 50 linhas)
+            lines = content.split('\n')[:50]
+            print('\n'.join(lines))
+            
+            if len(content.split('\n')) > 50:
+                print("\n... (relatório completo no arquivo)")
+                
+    except Exception as e:
+        print(f"❌ Erro ao ler relatório: {e}")
+
+async def main():
+    """Menu principal"""
+    while True:
+        show_menu()
+        
+        try:
+            choice = input("Escolha uma opção: ").strip()
+            
+            if choice == "0":
+                print("👋 Até logo!")
+                break
+                
+            elif choice == "1":
+                print("🚀 Iniciando teste rápido...")
+                report = await run_basic_test(duration=30, users=2)
+                print(f"✅ Teste concluído! Relatório: {report}")
+                
+            elif choice == "2":
+                print("🚀 Iniciando teste completo...")
+                report = await run_basic_test(duration=60, users=3)
+                print(f"✅ Teste concluído! Relatório: {report}")
+                
+            elif choice == "3":
+                print("🚀 Iniciando teste avançado com carga mista...")
+                report = await run_advanced_test()
+                print(f"✅ Teste avançado concluído! Relatório: {report}")
+                
+            elif choice == "4":
+                print("🚀 Iniciando teste intenso...")
+                report = await run_basic_test(duration=90, users=5)
+                print(f"✅ Teste intenso concluído! Relatório: {report}")
+                
+            elif choice == "5":
+                show_latest_report()
+                
+            else:
+                print("❌ Opção inválida!")
+                
+            input("\nPressione Enter para continuar...")
+            
+        except KeyboardInterrupt:
+            print("\n👋 Teste interrompido pelo usuário!")
+            break
+        except Exception as e:
+            print(f"❌ Erro: {e}")
+
+if __name__ == "__main__":
+    asyncio.run(main())
